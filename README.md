@@ -1,4 +1,4 @@
-Fixes issue with UI caused by having too many mods
+Balatro mod that fixes issue with UI caused by having too many mods
 
 # Features 
 - Control the position of the logo, in case mods add to may cards to the main menu
