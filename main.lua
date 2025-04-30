@@ -22,7 +22,7 @@ local function unjank_update_pos()
     Unjank.old_menu_pos = Unjank.config.menu_pos
 end
 
-local g_funcs_slider = G.FUNCS.slider
+local orig_slider = G.FUNCS.slider
 G.FUNCS.slider = function(e)
     if e.children[1].config.ref_table.ref_value == 'menu_width'  then
         local c = e.children[1]
@@ -40,72 +40,99 @@ G.FUNCS.slider = function(e)
             unjank_update_pos()
         end
     end
-    g_funcs_slider(e)
+    orig_slider(e)
+end
+
+function G.FUNCS.unjank_reset()
+	Unjank.config.menu_width = 1
+	Unjank.config.menu_pos = 0
+	unjank_update_width()
+	unjank_update_pos()
 end
 
 SMODS.current_mod.config_tab = function()
 	return {
-	  n = G.UIT.ROOT,
-	  config = { align = 'cm', padding = 0.07, emboss = 0.05, r = 0.1, colour = G.C.BLACK, minh = 2.5 ,minw = 7 },
-	  nodes = {
-		{
-			n = G.UIT.R,
-			config = { align = 'cm'},
-			nodes = {
-				{ n = G.UIT.T, config = { text = "Change how far apart cards on the main menu are", colour = G.C.WHITE, scale = 0.4 }},
-			}
-		},
-		{
-		  n = G.UIT.R,
-		  nodes = {
+		n = G.UIT.ROOT,
+		config = { align = 'cm', padding = 0.07, emboss = 0.05, r = 0.1, colour = G.C.BLACK, minh = 2.5 ,minw = 7 },
+		nodes = {
 			{
-			  n = G.UIT.C,
-			  nodes = {
-				create_slider{
-                    id = 'slider_red',
-                    colour = G.C.RED,
-                    label_scale = 1,
-                    w = 8, h = 0.5,
-                    padding = -0.05,
-                    ref_table = Unjank.config,
-                    ref_value = 'menu_width',
-                    min = 0.001, max = 1,
-                    decimal_places = 3,
-                    hide_value = true,
-                },
-			  }
+				n = G.UIT.R,
+				config = { align = 'cm'},
+				nodes = {
+					{ n = G.UIT.T, config = { text = "Change how far apart cards on the main menu are", colour = G.C.WHITE, scale = 0.4 }},
+				}
 			},
-		  }
-		},
-		{
-			n = G.UIT.R,
-			config = { align = 'cm'},
-			nodes = {
-				{ n = G.UIT.T, config = { text = "Change position of the Balatro logo", colour = G.C.WHITE, scale = 0.4 }},
-			}
-		},
-		{
-		  n = G.UIT.R,
-		  nodes = {
 			{
-			  n = G.UIT.C,
-			  nodes = {
-				create_slider{
-                    id = 'slider_red',
-                    colour = G.C.RED,
-                    label_scale = 1,
-                    w = 8, h = 0.5,
-                    padding = -0.05,
-                    ref_table = Unjank.config,
-                    ref_value = 'menu_pos',
-                    min = -1, max = 1,
-                    decimal_places = 3,
-                    hide_value = true,
-                },
-			  }
+				n = G.UIT.R,
+				config = { align = 'cm'},
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = { align = 'cm'},
+						nodes = {
+							create_slider{
+								id = 'slider_red',
+								colour = G.C.RED,
+								label_scale = 1,
+								w = 8, h = 0.5,
+								padding = -0.05,
+								ref_table = Unjank.config,
+								ref_value = 'menu_width',
+								min = 0.001, max = 1,
+								decimal_places = 3,
+								hide_value = true,
+							},
+						}
+					},
+				}
 			},
-		  }
+			{
+				n = G.UIT.R,
+				config = { align = 'cm'},
+				nodes = {
+					{ n = G.UIT.T, config = { text = "Change position of the Balatro logo", colour = G.C.WHITE, scale = 0.4 }},
+				}
+			},
+			{
+				n = G.UIT.R,
+				config = { align = 'cm'},
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = { align = 'cm'},
+						nodes = {
+							create_slider{
+								id = 'slider_red',
+								colour = G.C.RED,
+								label_scale = 1,
+								w = 8, h = 0.5,
+								padding = -0.05,
+								ref_table = Unjank.config,
+								ref_value = 'menu_pos',
+								min = -1, max = 1,
+								decimal_places = 3,
+								hide_value = true,
+							},
+						}
+					},
+				}
+			},
+			{
+				n = G.UIT.R,
+				config = { align = 'cm'},
+				nodes = {
+					{
+						n = G.UIT.C,
+						config = { align = 'cm'},
+						nodes = {
+							UIBox_button{
+								label = { "Reset Default" },
+								button = 'unjank_reset',
+							},
+						}
+					},
+				}
+			}
 		}
-	  }
 	}
 end
