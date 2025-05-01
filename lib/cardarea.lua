@@ -119,7 +119,6 @@ function unjank_cardarea_selection_box(areas)
 end
 
 function unjank_cardarea_box(a)
-	print(a)
 	G.E_MANAGER:add_event(Event({
 		blockable = false,
 		func = function()
