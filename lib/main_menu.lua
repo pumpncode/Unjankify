@@ -8,41 +8,20 @@ Game.main_menu = function(change_context)
     return ret
 end
 
-local function unjank_update_width()
+function Unjank.update_width()
     G.title_top.T.w = (G.title_top.T.w/Unjank.old_menu_width) * Unjank.config.menu_width
     Unjank.old_menu_width = Unjank.config.menu_width
 end
-local function unjank_update_pos()
+function Unjank.update_pos()
     G.title_top.T.x = G.title_top.T.x - (Unjank.old_menu_pos * pos_factor) + (Unjank.config.menu_pos * pos_factor)
     Unjank.old_menu_pos = Unjank.config.menu_pos
 end
 
-local orig_slider = G.FUNCS.slider
-G.FUNCS.slider = function(e)
-    if e.children[1].config.ref_table.ref_value == 'menu_width'  then
-        local c = e.children[1]
-        if G.CONTROLLER and G.CONTROLLER.dragging.target and
-        (G.CONTROLLER.dragging.target == e or
-        G.CONTROLLER.dragging.target == c) then
-            unjank_update_width()
-        end
-    end
-	if e.children[1].config.ref_table.ref_value == 'menu_pos'  then
-        local c = e.children[1]
-        if G.CONTROLLER and G.CONTROLLER.dragging.target and
-        (G.CONTROLLER.dragging.target == e or
-        G.CONTROLLER.dragging.target == c) then
-            unjank_update_pos()
-        end
-    end
-    orig_slider(e)
-end
-
-function G.FUNCS.unjank_reset(a)
+function G.FUNCS.unjank_reset()
 	Unjank.config.menu_width = 1
 	Unjank.config.menu_pos = 0
-	unjank_update_width()
-	unjank_update_pos()
+	Unjank.update_width()
+	Unjank.update_pos()
 end
 
 function G.FUNCS.unjank_adjust_menu(a)
