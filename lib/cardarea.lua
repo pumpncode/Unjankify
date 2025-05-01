@@ -16,12 +16,11 @@ end
 
 function G.FUNCS.unjank_adjust_cardarea(a)
     local areas = {}
-    if G.mxms_horoscope then
-        areas.mxms_horoscope = G.mxms_horoscope
-    end
-    if G.cine_quests then
-        areas.cine_quests = G.cine_quests
-    end
+	for k,v in pairs(Unjank.config.cardarea) do
+		if G[k] then
+			areas[k] = G[k]
+		end
+	end
     if areas ~= {} then
         G.FUNCS.exit_overlay_menu()
 
@@ -48,10 +47,10 @@ function Unjank.update_area_pos(a)
     Unjank.old_cardarea[a].y = Unjank.config.cardarea[a].y
 end
 
-local function unjank_adjust_area(a)
+function G.FUNCS.unjank_adjust_area(a)
     G.ADJUST_AREAS_SELECTION:remove()
     G.ADJUST_AREAS = UIBox({
-        definition = unjank_cardarea_box(a),
+        definition = unjank_cardarea_box(a.config.ref_table),
         config = {
             align = "cm",
             major = G.ROOM_ATTACH,
@@ -62,24 +61,14 @@ local function unjank_adjust_area(a)
     })
 end
 
-function G.FUNCS.unjank_adjust_mxms_horoscope(a)
-    unjank_adjust_area("mxms_horoscope")
-end
-function G.FUNCS.unjank_reset_mxms_horoscope()
-	Unjank.config.cardarea.mxms_horoscope.x = 0
-    Unjank.config.cardarea.mxms_horoscope.y = 0
-	Unjank.update_area_pos("mxms_horoscope")
-end
-function G.FUNCS.unjank_adjust_cine_quests(a)
-    unjank_adjust_area("cine_quests")
-end
-function G.FUNCS.unjank_reset_cine_quests()
-	Unjank.config.cardarea.cine_quests.x = 0
-    Unjank.config.cardarea.cine_quests.y = 0
-	Unjank.update_area_pos("cine_quests")
+
+function G.FUNCS.unjank_reset_area(a)
+	Unjank.config.cardarea[a.config.ref_table].x = 0
+    Unjank.config.cardarea[a.config.ref_table].y = 0
+	Unjank.update_area_pos(a.config.ref_table)
 end
 
-function G.FUNCS.exit_area_box(a)
+function G.FUNCS.exit_area_box()
 	SMODS.save_all_config()
 	G.ADJUST_AREAS:remove()
 end
@@ -96,7 +85,8 @@ function unjank_cardarea_selection_box(areas)
     for k,v in pairs(areas) do
         buttons[k] = UIBox_button{
             label = { k },
-            button = "unjank_adjust_"..k,
+			ref_table = k,
+            button = "unjank_adjust_area",
             colour = G.C.CHIPS
         }
     end
@@ -129,6 +119,7 @@ function unjank_cardarea_selection_box(areas)
 end
 
 function unjank_cardarea_box(a)
+	print(a)
 	G.E_MANAGER:add_event(Event({
 		blockable = false,
 		func = function()
@@ -214,8 +205,9 @@ function unjank_cardarea_box(a)
 						config = { align = 'cm'},
 						nodes = {
 							UIBox_button{
+								ref_table = a,
 								label = { "Reset Default" },
-								button = "unjank_reset_"..a,
+								button = "unjank_reset_area",
 							},
 						}
 					},
